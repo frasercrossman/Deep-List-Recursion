@@ -12,9 +12,13 @@
     (cond ((null? tree)
           '())
           ((node? tree)
-           (list the-node-tag (f (tree-labels tree)) (tree-map f (node-left tree)) (tree-map f (node-left tree))))
+           (list the-node-tag (f (tree-labels tree)) (tree-map f (node-left tree)) (tree-map f (node-right tree))))
           ((leaf? tree)
            (list the-leaf-tag (f (tree-labels tree)))))))
+
+(define remove-labels
+  (lambda (labels tree)
+    (tree-map (lambda (set) (set-minus set labels)) tree)))
 
 ;;; Solution Comments:
 ;;;
