@@ -13,25 +13,18 @@
            tree2)
           ((null? tree2)
            tree1)
-          (else (let ((label (set-union (tree-labels tree1) (tree-labels tree2)))
-                      (tag ((lambda (tree1 tree2)
-                             (if (and (leaf? tree1)
-                                      (leaf? tree2))
-                                 the-leaf-tag
-                                 the-node-tag)) tree1 tree2))
-                      (left (lambda (tree)
-                                  (cond ((leaf? tree)
-                                         '())
-                                        ((node? tree)
-                                         (node-left tree)))))
-                      (right (lambda (tree)
-                                  (cond ((leaf? tree)
-                                         '())
-                                        ((node? tree)
-                                         (node-right tree))))))
-                  (list tag label
-                        (tree-merge (left tree1) (left tree2))
-                        (tree-merge (right tree1) (right tree2))))))))
+          (else (let ((label (set-union (tree-labels tree1) (tree-labels tree2))))
+                  (cond ((and (leaf? tree1)
+                              (leaf? tree2))
+                              (make-leaf label))
+                        ((leaf? tree1)
+                         (make-node label (node-left tree2) (node-right tree2)))
+                        ((leaf? tree2)
+                         (make-node label (node-left tree1) (node-right tree1)))
+                        (else
+                         (make-node label
+                                    (tree-merge (node-left tree1) (node-left tree2))
+                                    (tree-merge (node-right tree1) (node-right tree2))))))))))
 
 ;;; Solution Comments:
 ;;;
