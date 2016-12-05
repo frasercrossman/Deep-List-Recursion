@@ -9,24 +9,22 @@
 
 (define tree-merge
   (lambda (tree1 tree2)
-    (cond ((and (null? tree1)
-                (null? tree2))
-           '())
-          ((leaf? tree1)
-           (list the-node-tag
-                 (set-union (tree-labels tree1) (tree-labels tree2))
-                 (node-left tree2)
-                 (node-right tree2)))
-          ((leaf? tree2)
-           (list the-node-tag
-                 (set-union (tree-labels tree1) (tree-labels tree2))
-                 (node-left tree1)
-                 (node-right tree1)))
-          (else
-           (list the-node-tag
-                 (set-union (tree-labels tree1) (tree-labels tree2))
-                 (tree-merge (node-left tree1) (node-left tree2))
-                 (tree-merge (node-right tree1) (node-right tree2)))))))
+    (cond ((null? tree1)
+           tree2)
+          ((null? tree2)
+           tree1)
+          (else (let ((label (set-union (tree-labels tree1) (tree-labels tree2))))
+                  (cond ((and (leaf? tree1)
+                              (leaf? tree2))
+                              (make-leaf label))
+                        ((leaf? tree1)
+                         (make-node label (node-left tree2) (node-right tree2)))
+                        ((leaf? tree2)
+                         (make-node label (node-left tree1) (node-right tree1)))
+                        (else
+                         (make-node label
+                                    (tree-merge (node-left tree1) (node-left tree2))
+                                    (tree-merge (node-right tree1) (node-right tree2))))))))))
 
 ;;; Solution Comments:
 ;;;
