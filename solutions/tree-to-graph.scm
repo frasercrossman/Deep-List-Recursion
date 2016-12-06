@@ -7,6 +7,14 @@
 
 (load "tree-implementation-list.scm")
 
+(define make-vertex
+  (lambda (id labels)
+    (list 'vertex id labels)))
+
+(define make-edge
+  (lambda (src des)
+        (list 'edge src des)))
+
 (define create-label
   (lambda (l)
          (string->symbol (symbol-append-reverse l))))
@@ -23,18 +31,29 @@
     (cond ((null? tree)
            '())
           (else
-           (tree-to-graph-set tree (list 't))))))
+           (cons (make-vertex 't (tree-labels tree))
+                 (tree-to-graph-set tree '(t)))))))
 
 (define tree-to-graph-set
   (lambda (tree id)
     (cond ((leaf? tree)
-           (list 'vertex (create-label id) (tree-labels tree)))
+           '())
           ((node? tree)
-           (list (list 'vertex (create-label id) (tree-labels tree))
-                 (list 'edge (create-label id) (create-label (cons 'l id)))
-                 (list 'edge (create-label id) (create-label (cons 'r id)))
-                 (tree-to-graph-set (node-left tree) (cons 'l id))
-                 (tree-to-graph-set (node-right tree) (cons 'r id)))))))
-
+           (let ((left-id (cons 'l id))
+                 (right-id (cons 'r id)))
+             (cond ((or (node? (node-left tree))
+                        (node? (node-right tree)))
+                    (append (list (make-vertex (create-label left-id) (tree-labels (node-left tree)))
+                                  (make-vertex (create-label right-id) (tree-labels (node-right tree)))
+                                  (make-edge (create-label id) (create-label left-id))
+                                  (make-edge (create-label id) (create-label right-id)))
+                            (tree-to-graph-set (node-left tree) left-id)
+                            (tree-to-graph-set (node-right tree) right-id)))
+                   (else
+                    (list (make-vertex (create-label left-id) (tree-labels (node-left tree)))
+                          (make-vertex (create-label right-id) (tree-labels (node-right tree)))
+                          (make-edge (create-label id) (create-label left-id))
+                          (make-edge (create-label id) (create-label right-id))))))))))
+           
 ;;; Solution Comments:
 ;;;
