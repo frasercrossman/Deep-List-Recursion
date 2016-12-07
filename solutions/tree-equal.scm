@@ -21,8 +21,9 @@
                            (tree-equal? (node-right tree1) (node-right tree2)))))))))
 
 ;;; Solution Comments:
-;;; The basis case of this function is that the two trees are null and if so return true
-;;; otherwise by the inductive case return true if all the following are true:
+;;; The basis case of this function is that the current node in the two trees are
+;;; null and if so return true.
+;;; Otherwise by the inductive case return true if all the following are true:
 ;;;   - The current node tags are equal
 ;;;   - The current node labels are equivalent sets
 ;;;   - Either of the following:
