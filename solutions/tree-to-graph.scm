@@ -56,4 +56,14 @@
                           (make-edge (create-label id) (create-label right-id))))))))))
            
 ;;; Solution Comments:
+;;; The basis case of this function is that the current node in the tree is
+;;; a leaf return the empty list.
+;;; Otherwise if the current node in the tree is a node then create the left
+;;; and right node ids.
+;;; Only if one of the children are nodes will it be necessary to append the
+;;; result of recursively using this function and so this opperation is only
+;;; carried out in this case.
+;;; Otherwise if both of the children are leaves then a list of the
+;;; vertices of the two children are created, as well as the edges connecting
+;;; them to their parent is returned.
 ;;;

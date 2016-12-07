@@ -27,4 +27,14 @@
                                     (tree-merge (node-right tree1) (node-right tree2))))))))))
 
 ;;; Solution Comments:
+;;; The basis case of this function is that the current node in tree1 or tree2 is
+;;; null and if so then return the other tree respectively
+;;; Otherwise the union of the sets of labels of the current nodes of the two trees
+;;; is created.
+;;; Then it is checked if both trees are leaves and if so then a leaf with the
+;;; union of the labels is created.
+;;; If only one of the trees is a leaf then a node is created with the union of the
+;;; labels and children set to the reset of the other tree respectively.
+;;; If both of the trees are nodes then a node is created with the union of the
+;;; labels and children set the the left and right merged trees.
 ;;;
