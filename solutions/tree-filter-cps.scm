@@ -15,8 +15,8 @@
 
 (define tree-filter-cps
   (lambda (pred tree cont)
-    (if ((null? tree)
-           (cont '() '()))
+    (if (null? tree)
+           (cont '() '())
         (pred (tree-labels tree)
               (lambda (b)
                 (cond ((leaf? tree)
