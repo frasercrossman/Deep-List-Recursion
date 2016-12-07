@@ -15,49 +15,28 @@
 
 (define tree-filter-cps
   (lambda (pred tree cont)
-    (cond ((null? tree)
+    (if ((null? tree)
            (cont '() '()))
-          (else
-           (pred (tree-labels tree)
-                 (lambda (b)
-                   (cond ((leaf? tree)
-                          (let ((yes-leaf (make-leaf (tree-labels tree)))
-                                (no-leaf (make-leaf '())))
-                          (if b (cont yes-leaf no-leaf)
-                                (cont no-leaf yes-leaf))))
-                         ((node? tree)
-                          (let ((yes-node (make-node (tree-labels tree)
-                                                     (tree-filter-cps pred
-                                                                      (node-left tree)
-                                                                      (lambda (yes no)
-                                                                        (cont yes no)))
-                                                     (tree-filter-cps pred
-                                                                       (node-right tree)
-                                                                       (lambda (yes no)
-                                                                         (cont yes no)))))
-                                (no-node (make-node '()
-                                                     (tree-filter-cps pred
-                                                                      (node-left tree)
-                                                                      (lambda (yes no)
-                                                                        (cont yes no)))
-                                                     (tree-filter-cps pred
-                                                                       (node-right tree)
-                                                                       (lambda (yes no)
-                                                                         (cont yes no))))))
-                            (if b
-                                (cont yes-node no-node)
-                                (cont no-node yes-node)))))))))))
-
-;(let ((tree (make-node '(aaa)
-;                       (make-leaf '(b))
-;                       (make-leaf '(a)))))
-;  (instrument-count-pairs
-;   (lambda ()
-;     (tree-filter-cps member-a tree cons))))
-
-(tree-filter-cps member-a (make-node '(aaa)
-                       (make-leaf '(b))
-                       (make-leaf '(a))) (lambda (yes no) yes))
+        (pred (tree-labels tree)
+              (lambda (b)
+                (cond ((leaf? tree)
+                       (if b
+                           (cont (make-leaf (tree-labels tree)) (make-leaf '()))
+                           (cont (make-leaf '()) (make-leaf (tree-labels tree)))))
+                      ((node? tree)
+                       (tree-filter-cps
+                        pred
+                        (node-left tree)
+                        (lambda (yes-left no-left)
+                          (tree-filter-cps
+                           pred
+                           (node-right tree)
+                           (lambda (yes-right no-right)
+                             (if b
+                                 (cont (make-node (tree-labels tree) yes-left yes-right)
+                                       (make-node '() no-left no-right))
+                                 (cont (make-node '() yes-left yes-right)
+                                       (make-node (tree-labels tree) no-left no-right))))))))))))))
 
 ;;; Solution Comments:
 ;;;
